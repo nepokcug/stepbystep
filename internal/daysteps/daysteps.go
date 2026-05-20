@@ -3,6 +3,7 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -39,7 +40,9 @@ func parsePackage(data string) (int, time.Duration, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("invalid duration format: %w", err)
 	}
-
+	if duration <= 0 {
+		return 0, 0, errors.New("duration must be greater than 0")
+	}
 	return steps, duration, nil
 }
 
@@ -49,12 +52,12 @@ func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	// Если с parsePackage вернулась ошибка выводим ее и отправляем пустую строку
 	if err != nil {
-		fmt.Println("Ошибка:", err)
+		log.Println("Ошибка:", err)
 		return ""
 	}
 	// Проверяем чтобы количесвто шагов было больше нуля (з.ы. не понимаю зачем, это уже было в parsePackage)
 	if steps <= 0 {
-		fmt.Println("Ошибка, количество шагов должно быть больше 0")
+		log.Println("Ошибка, количество шагов должно быть больше 0")
 		return ""
 	}
 	// Вычисляем км
@@ -67,7 +70,7 @@ func DayActionInfo(data string, weight, height float64) string {
 		return ""
 	}
 	// Формируем сроку
-	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.",
+	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n",
 		steps, distanceKm, calories)
 
 	return result

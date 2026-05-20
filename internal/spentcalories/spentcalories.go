@@ -39,6 +39,10 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("invalid duration format: %w", err)
 	}
+	// Проверка на нулевую длительность
+	if duration <= 0 {
+		return 0, "", 0, errors.New("duration must be greater than 0")
+	}
 	return steps, parts[1], duration, nil
 }
 
@@ -83,7 +87,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 			"Длительность: %.2f ч.\n"+
 			"Дистанция: %.2f км.\n"+
 			"Скорость: %.2f км/ч\n"+
-			"Сожгли калорий: %.2f",
+			"Сожгли калорий: %.2f\n",
 			duration.Hours(), distanceKm, speed, calories), nil
 
 	case "Бег":
